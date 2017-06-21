@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context-3.2.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+	<!-- Enable Spring Annotation Configuration -->
+	<context:annotation-config />
+	<!-- Scan for all of Spring components such as Spring Service -->
+	<context:component-scan base-package="com.itc" />
+
+	<!-- Necessary to get the entity manager injected into the factory bean -->
+	<bean
+		class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+	
+	<!-- database.properties configuration -->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>/WEB-INF/database.properties</value>
+		</property>
+	</bean>
+
+
+	<!-- Entity Manager Factory -->
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource">
+			<ref bean="MyDataSource" />
+		</property>
+		<property name="packagesToScan">
+			<list>
+				<value>com.itc.model</value>
+			</list>
+		</property>
+		<property name="persistenceUnitName" value="jpa-persistence"></property>
+		<property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- dataSource -->
+	<bean id="MyDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">  <!-- class="org.apache.commons.dbcp.BasicDataSource" -->
+		<!-- access -->
+		<property name="driverClass" value="${db.driver}" />
+		<property name="jdbcUrl" value="${db.url}" />
+		<property name="user" value="${db.user}" />
+		<property name="password" value="${db.password}" />
+		<!-- pool sizing -->
+		<property name="initialPoolSize" value="3" />
+		<property name="minPoolSize" value="6" />
+		<property name="maxPoolSize" value="25" />
+		<property name="acquireIncrement" value="3" />
+		<property name="maxStatements" value="0" />
+		<!-- retries -->
+		<property name="acquireRetryAttempts" value="30" />
+		<property name="acquireRetryDelay" value="1000" /> <!-- 1s -->
+		<property name="breakAfterAcquireFailure" value="false" />
+		<!-- refreshing connections -->
+		<property name="maxIdleTime" value="180" /> <!-- 3min -->
+		<property name="maxConnectionAge" value="10" /> <!-- 1h -->
+		<!-- timeouts and testing -->
+		<property name="checkoutTimeout" value="5000" /> <!-- 5s -->
+		<property name="idleConnectionTestPeriod" value="60" /> <!-- 60 -->
+		<property name="testConnectionOnCheckout" value="true" />
+		<property name="preferredTestQuery" value="SELECT 1" />
+		<property name="testConnectionOnCheckin" value="true" />
+	</bean>
+
+	<!-- Define Hibernate JPA Vendor Adapter -->
+	<bean id="jpaVendorAdapter"
+		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+		<property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
+		<property name="generateDdl" value="false" />
+		<property name="showSql" value="true" />
+	</bean>
+
+	<!-- Transaction Manager -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<!-- Detect @Transactional -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+</beans>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<script>
+$(document).ready(function(){
+	$("#genToken").text(token);
+	$("#user").text(userName);
+	$("#role").text(userRole);
+	
+	registerEvents();
+});
+
+function registerEvents(){
+
+	$("#withToken").click(function(){ accesWithToken(); });
+	$("#withOutToken").click(function(){ accessWithOutToken(); });
+	$("#unSecured").click(function(){ accesUnSecuredMehod(); });
+	$("#logOut").click(function(){ logOut(); });
+	
+	$('#data, #customerData, #listAcitivity').click(function(){
+		var endPoint = $(this).attr('id');
+		accesService(endPoint);
+	})
+}
+</script>
+<body>
+<br/>
+User = <label id="user"></label><br/><br/>
+Role = <label id="role"></label><br/><br/>
+Generated token = <label id="genToken"></label><br/><br/>
+
+<!-- <button id="withToken" type="button">Access Secured Method with Token</button>&nbsp;&nbsp;
+<button id="withOutToken" type="button">Try Accessing Secured Method without Token</button>&nbsp;&nbsp;
+<button id="unSecured" type="button">Access Unsecured Method without Token</button>&nbsp;&nbsp;
+<button id="logOut" type="button">logOut</button>
+ -->
+<table>
+<tr>
+<td><button id="withToken" type="button">Access Secured Method with Token</button></td>
+<td>&nbsp;&nbsp;</td>
+<td><button id="withOutToken" type="button">Try Accessing Secured Method without Token</button></td>
+<td>&nbsp;&nbsp;</td>
+<td><button id="unSecured" type="button">Access Unsecured Method without Token</button></td>
+<td>&nbsp;&nbsp;</td>
+<td><button id="data" type="button">Access data service</button></td>
+<td>&nbsp;&nbsp;</td>
+<td><button id="customerData" type="button">Access customerData service</button></td>
+<td>&nbsp;&nbsp;</td>
+<td><button id="listAcitivity" type="button">Access List Acitivity service</button></td>
+<td>&nbsp;&nbsp;</td>
+<td style="text-align:right"><button id="logOut" type="button">Log Out</button></td>
+</tr>
+</table>
+
+<br/><br/>
+Response = <div id="resp"></div>
+</body>
+</html>

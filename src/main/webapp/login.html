@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<body>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	 
+	$("#loginUser").click(function(e){
+    	//$(this).disabled='disabled';
+    	e.preventDefault();
+       authenticateUser();
+      // $(this).disabled='';
+    });
+    
+});
+
+function checkLoginState() {
+	  FB.getLoginStatus(function(response) {
+	    statusChangeCallback(response);
+	  });
+	}
+
+</script>
+
+  <div class="imgcontainer">
+    <img src="images/img_avatar.png" alt="Avatar" class="avatar">
+  </div>
+
+  <div class="container">
+    <!-- <label style="text-align: left;"><b>Username</b></label> -->
+    <input type="text" placeholder="Enter Username" id="username" required>
+
+    <!-- <label style="text-align: left;"><b>Password</b></label> -->
+    <input type="password" placeholder="Enter Password" id="password" required>
+
+    <button id="loginUser" type="button">Login</button>
+    <button type="reset" style="background-color:red">Cancel</button>
+   
+  </div>
+  
+
+<br/>
+<label id="status"></label><br/><br/>
+	
+</body>
+</html>
